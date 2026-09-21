@@ -1,0 +1,75 @@
+% chinese-verbose-trad2.bbx
+% 在 biblatex 自带 verbose-trad2 之上做中文本地化封装：
+%   - 载入中文术语（chinese.lbx）
+%   - 把标点改为中文习惯（：，。、《》等）
+%   - 把 “出版地：出版社，年份” 改成中文顺序
+% 用法：\usepackage[style=chinese-verbose-trad2, language=chinese]{biblatex}
+
+\ProvidesFile{chinese-verbose-trad2.bbx}
+[2024/06/01 中文本地化的 verbose-trad2 样式（bbx）]
+
+\RequireBibliographyStyle{verbose-trad2}
+
+% 让 biblatex 在文档语言为 chinese 时调用 chinese.lbx
+\DeclareLanguageMapping{chinese}{chinese}
+
+% ============ 中文标点 ============
+% 作者 -> 题名
+\renewcommand*{\labelnamepunct}{：}
+% 各著录块之间（题名、编者、出版项……）
+\renewcommand*{\newunitpunct}{，}
+% 条目结尾
+\renewcommand*{\finentrypunct}{。}
+% 章节 -> 页码
+\renewcommand*{\bibpagespunct}{，}
+% “载”之后的标点（载：期刊名）
+\renewcommand*{\intitlepunct}{：}
+
+% 姓名列举：张三、李四和王五
+\DeclareDelimFormat{multinamedelim}{、}
+\DeclareDelimFormat{finalnamedelim}{和}
+\DeclareDelimFormat{multilistdelim}{、}
+\DeclareDelimFormat{finallistdelim}{和}
+
+% 页码格式：第X页 / 第X—Y页（范围用中文破折号）
+\DeclareFieldFormat{postnote}{第\mknormrange{#1}页}
+\DeclareFieldFormat{pages}{第\mknormrange{#1}页}
+\DeclareFieldFormat{volcitepages}{第\mknormrange{#1}页}
+\DeclareFieldFormat{pagetotal}{共\mknormrange{#1}页}
+% 责任方式词紧贴姓名：张三编 / 李四译（去掉默认空格）
+\DeclareDelimFormat{editortypedelim}{}
+\DeclareDelimFormat{translatortypedelim}{}
+\DeclareDelimFormat{authortypedelim}{}
+
+% ============ 中文“出版地：出版社，年份” ============
+\renewbibmacro*{publisher+location+date}{%
+  \printlist{location}%
+  \iflistundef{publisher}
+    {\setunit*{\addcomma\space}}
+    {\setunit*{：}}%
+  \printlist{publisher}%
+  \setunit*{，}%
+  \usebibmacro{date}%
+  \newunit}
+
+\renewbibmacro*{institution+location+date}{%
+  \printlist{location}%
+  \iflistundef{institution}
+    {\setunit*{\addcomma\space}}
+    {\setunit*{：}}%
+  \printlist{institution}%
+  \setunit*{，}%
+  \usebibmacro{date}%
+  \newunit}
+
+\renewbibmacro*{organization+location+date}{%
+  \printlist{location}%
+  \iflistundef{organization}
+    {\setunit*{\addcomma\space}}
+    {\setunit*{：}}%
+  \printlist{organization}%
+  \setunit*{，}%
+  \usebibmacro{date}%
+  \newunit}
+
+\endinput

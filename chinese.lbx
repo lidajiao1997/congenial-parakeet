@@ -1,0 +1,206 @@
+% chinese.lbx -- biblatex 中文本地化文件
+% 适用于 biblatex 3.x（已在 3.19 上测试）
+% 本文件把 ibid./idem/op. cit./loc. cit. 等提示词以及各类术语汉化，
+% 并提供“年-月-日”式中文日期格式。
+% 用法：把本文件放在项目目录（或 texmf 树）中，并在 biblatex 选项中
+%       设置 language=chinese（详见配套 chinese-verbose-trad2 样式）。
+%
+% 注意：biblatex 的字符串格式为  string = {{长形式}{短形式}} ，
+%       中文通常长/短形式相同。
+
+\ProvidesFile{chinese.lbx}
+[2024/06/01 中文本地化文件（基于 biblatex 3.19）]
+
+% 共用英文作为回退基类：未在此显式重写的字符串自动沿用英文，
+% 避免遗漏导致报错。
+\DeclareBibliographyExtras{%
+  % 中文日期：年-月-日（只有年时输出“YYYY年”）
+  \protected\def\mkbibdatelong#1#2#3{%
+    \iffieldundef{#1}{}{\dateeraprintpre{#1}\stripzeros{\thefield{#1}}年}%
+    \iffieldundef{#2}{}{\stripzeros{\thefield{#2}}月}%
+    \iffieldundef{#3}{}{\stripzeros{\thefield{#3}}日}}%
+  % 简短日期：YYYY/MM/DD
+  \protected\def\mkbibdateshort#1#2#3{%
+    \iffieldundef{#1}{}{\dateeraprintpre{#1}\mkyearzeros{\thefield{#1}}}%
+    \iffieldundef{#2}{}{/\mkmonthzeros{\thefield{#2}}}%
+    \iffieldundef{#3}{}{/\mkdayzeros{\thefield{#3}}}}%
+  % 月份数字 -> 中文月份
+  \protected\def\mkbibmonth#1{\ifcase#1\or
+    一月\or 二月\or 三月\or 四月\or 五月\or 六月\or
+    七月\or 八月\or 九月\or 十月\or 十一月\or 十二月\fi}%
+  % 季节
+  \protected\def\mkbibseason#1{\ifcase#1\or 春\or 夏\or 秋\or 冬\fi}%
+  % 页码/日期范围改用中文破折号
+  \protected\def\bibrangedash{\textemdash}%
+  % 中文姓名列举：最后两个名字之间不加逗号，用“和”连接
+  \def\finalandcomma{}%
+  \def\finalandsemicolon{}%
+  % 日期范围宏直接复用 biblatex 内置的（英文）截断逻辑，
+  % 具体格式交给上面的 \mkbibdatelong / \mkbibdateshort 控制。
+  \savecommand\mkdaterangecomp
+  \savecommand\mkdaterangecompextra
+  \savecommand\mkdaterangeterse
+  \savecommand\mkdaterangeterseextra
+  \protected\def\mkdaterangecomp{\lbx@us@mkdaterangetrunc@long{long}}%
+  \protected\def\mkdaterangeterse{\lbx@us@mkdaterangetrunc@short{short}}%
+  \protected\def\mkdaterangecompextra{\lbx@us@mkdaterangetruncextra@long{long}}%
+  \protected\def\mkdaterangeterseextra{\lbx@us@mkdaterangetruncextra@short{short}}%
+}
+
+\UndeclareBibliographyExtras{%
+  \restorecommand\mkdaterangecomp
+  \restorecommand\mkdaterangecompextra
+  \restorecommand\mkdaterangeterse
+  \restorecommand\mkdaterangeterseextra
+}
+
+\DeclareBibliographyStrings{%
+  inherit = {english},
+  % ============ 核心提示词（脚注追踪）============
+  ibidem           = {{同上}{同上}},
+  idem             = {{同上}{同上}},
+  idemsm           = {{同上}{同上}},
+  idemsf           = {{同上}{同上}},
+  idemsn           = {{同上}{同上}},
+  idempm           = {{同上}{同上}},
+  idempf           = {{同上}{同上}},
+  idempn           = {{同上}{同上}},
+  idempp           = {{同上}{同上}},
+  opcit            = {{前引书}{前引书}},
+  loccit           = {{同上}{同上}},
+  thiscite         = {{见}{见}},
+  % ============ 参见 / 转引 ============
+  see              = {{参见}{参见}},
+  seealso          = {{又见}{又见}},
+  seenote          = {{参见前注}{参见前注}},
+  quotedin         = {{转引自}{转引自}},
+  confer           = {{参见}{参见}},
+  citedas          = {{以下简称}{以下简称}},
+  % ============ 连接词 ============
+  and              = {{和}{和}},
+  andothers        = {{等}{等}},
+  andmore          = {{等}{等}},
+  % ============ 责任者 / 角色 ============
+  editor           = {{编}{编}},
+  editors          = {{编}{编}},
+  compiler         = {{编纂}{编纂}},
+  compilers        = {{编纂}{编纂}},
+  founder          = {{创建者}{创建者}},
+  founders         = {{创建者}{创建者}},
+  continuator      = {{续作者}{续作者}},
+  continuators     = {{续作者}{续作者}},
+  redactor         = {{修订者}{修订者}},
+  redactors        = {{修订者}{修订者}},
+  reviser          = {{修订者}{修订者}},
+  revisers         = {{修订者}{修订者}},
+  collaborator     = {{合作者}{合作者}},
+  collaborators     = {{合作者}{合作者}},
+  translator       = {{译}{译}},
+  translators      = {{译}{译}},
+  commentator      = {{疏}{疏}},
+  commentators     = {{疏}{疏}},
+  annotator        = {{注}{注}},
+  annotators       = {{注}{注}},
+  introduction     = {{导言}{导言}},
+  foreword         = {{前言}{前言}},
+  afterword        = {{后记}{后记}},
+  byeditor         = {{编}{编}},
+  bycompiler       = {{编纂}{编纂}},
+  bytranslator     = {{译}{译}},
+  byredactor       = {{修订}{修订}},
+  byreviser        = {{修订}{修订}},
+  byreviewer       = {{评}{评}},
+  byfounder        = {{创建}{创建}},
+  bycontinuator    = {{续作}{续作}},
+  bycollaborator   = {{合作}{合作}},
+  bycommentator    = {{疏}{疏}},
+  byannotator      = {{注}{注}},
+  withcommentator  = {{疏}{疏}},
+  withannotator    = {{注}{注}},
+  withintroduction = {{撰导言}{撰导言}},
+  withforeword     = {{撰前言}{撰前言}},
+  withafterword    = {{撰后记}{撰后记}},
+  byeditortr       = {{编并译}{编并译}},
+  % ============ 容器 / 位置 ============
+  in               = {{载}{载}},
+  % ============ 卷期页码 ============
+  volume           = {{卷}{卷}},
+  volumes          = {{卷}{卷}},
+  number           = {{期}{期}},
+  issue            = {{期}{期}},
+  part             = {{部分}{部分}},
+  edition          = {{版}{版}},
+  version          = {{版本}{版本}},
+  page             = {{页}{页}},
+  pages            = {{页}{页}},
+  column           = {{栏}{栏}},
+  columns          = {{栏}{栏}},
+  section          = {{节}{节}},
+  sections         = {{节}{节}},
+  paragraph        = {{段}{段}},
+  paragraphs       = {{段}{段}},
+  verse            = {{行}{行}},
+  verses           = {{行}{行}},
+  line             = {{行}{行}},
+  lines            = {{行}{行}},
+  chapter          = {{章}{章}},
+  % ============ 出版 / 版本 ============
+  reprint          = {{重印}{重印}},
+  reprintof        = {{重印自}{重印自}},
+  reprintas        = {{重印为}{重印为}},
+  reprintfrom      = {{重印自}{重印自}},
+  translationof    = {{译自}{译自}},
+  translationas    = {{译作}{译作}},
+  translationfrom  = {{译自}{译自}},
+  reviewof         = {{评}{评}},
+  % ============ 注释 / 摘要 ============
+  library          = {{藏}{藏}},
+  abstract         = {{摘要}{摘要}},
+  annotation       = {{笺注}{笺注}},
+  % ============ 学位论文 / 报告 ============
+  phdthesis        = {{博士学位论文}{博士论文}},
+  mathesis         = {{硕士学位论文}{硕士论文}},
+  resreport        = {{研究报告}{研究报告}},
+  techreport       = {{技术报告}{技术报告}},
+  % ============ URL / 数据库 ============
+  url              = {{网址}{网址}},
+  urlfrom          = {{引自}{引自}},
+  urlseen          = {{访问于}{访问于}},
+  patent           = {{专利}{专利}},
+  software         = {{软件}{软件}},
+  datacd           = {{CD-ROM}{CD-ROM}},
+  audiocd          = {{音频光盘}{音频光盘}},
+  % ============ 年代 / 纪元 ============
+  commonera        = {{公元}{公元}},
+  beforecommonera  = {{公元前}{公元前}},
+  annodomini       = {{公元}{公元}},
+  beforechrist     = {{公元前}{公元前}},
+  circa            = {{约}{约}},
+  spring           = {{春}{春}},
+  summer           = {{夏}{夏}},
+  autumn           = {{秋}{秋}},
+  winter           = {{冬}{冬}},
+  % ============ 月份 ============
+  january          = {{一月}{1月}},
+  february         = {{二月}{2月}},
+  march            = {{三月}{3月}},
+  april            = {{四月}{4月}},
+  may              = {{五月}{5月}},
+  june             = {{六月}{6月}},
+  july             = {{七月}{7月}},
+  august           = {{八月}{8月}},
+  september        = {{九月}{9月}},
+  october          = {{十月}{10月}},
+  november         = {{十一月}{11月}},
+  december         = {{十二月}{12月}},
+  % ============ 杂项 ============
+  sequens          = {{以下}{以下}},
+  sequentes        = {{以下}{以下}},
+  newseries        = {{新辑}{新辑}},
+  oldseries        = {{旧辑}{旧辑}},
+  shorthands       = {{缩略语表}{缩略语}},
+  bibliography     = {{参考文献}{参考文献}},
+  references       = {{引用文献}{引用文献}},
+}
+
+\endinput

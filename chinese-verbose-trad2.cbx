@@ -1,0 +1,22 @@
+% chinese-verbose-trad2.cbx
+% 配合 chinese-verbose-trad2.bbx 使用。
+% 主要处理脚注中的短引：姓名->题名用“：”，题名->“前引书”用“，”。
+
+\ProvidesFile{chinese-verbose-trad2.cbx}
+[2024/06/01 中文本地化的 verbose-trad2 样式（cbx）]
+
+\RequireCitationStyle{verbose-trad2}
+
+% 脚注短引：姓名 -> 题名 用中文冒号（全局，bib/textcite 另有专用覆盖）
+\DeclareDelimFormat{nametitledelim}{：}
+% 脚注中 引文 -> 页码 用中文逗号
+\DeclareDelimFormat{postnotedelim}{，}
+
+% 题名 -> “前引书” 之间用中文逗号
+\renewbibmacro*{cite:title}{%
+  \printtext[bibhyperlink]{%
+    \printfield[citetitle]{labeltitle}%
+    \setunit{，}%
+    \bibstring[\mkibid]{opcit}}}
+
+\endinput
