@@ -1,4 +1,4 @@
-## biblatex 中文本地化样式集 README
+## biblatex verbose-trad2 中文化样式集 README
 
 本样式集为 biblatex 的 verbose-trad2 样式提供完整的中文本地化支持，包含三个文件：
 
