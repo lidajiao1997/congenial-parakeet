@@ -1,0 +1,130 @@
+% example.tex —— 演示：汉化后的 biblatex verbose-trad2（脚注中的 ibid./idem/op. cit. 均为中文）
+% 编译流程：xelatex example -> biber example -> xelatex example -> xelatex example
+
+\begin{filecontents*}[overwrite]{refs.bib}
+@book{zhang2010,
+	author    = {张伟},
+	title     = {民法总论},
+	publisher = {法律出版社},
+	address   = {北京},
+	year      = {2010},
+}
+
+@book{zhang2015,
+	author    = {张伟},
+	title     = {合同法研究},
+	publisher = {中国人民大学出版社},
+	address   = {北京},
+	year      = {2015},
+}
+
+@book{li2020,
+	author     = {李娜},
+	title      = {比较法导论},
+	translator = {王芳},
+	publisher  = {北京大学出版社},
+	address    = {北京},
+	year       = {2020},
+}
+
+@article{wang2019,
+	author    = {王刚},
+	title     = {论正当防卫},
+	journal   = {法学研究},
+	volume    = {3},
+	number    = {2},
+	year      = {2019},
+	pages     = {10--25},
+}
+
+@collection{chen2018,
+	editor    = {陈华},
+	title     = {宪法学文集},
+	publisher = {法律出版社},
+	address   = {北京},
+	year      = {2018},
+}
+
+@phdthesis{zhao2021,
+	author = {赵磊},
+	title  = {明代财政制度研究},
+	school = {清华大学},
+	address = {北京},
+	year   = {2021},
+}
+
+@book{smith2001,
+	author    = {Smith, John},
+	title     = {The History of Things},
+	publisher = {Oxford University Press},
+	address   = {Oxford},
+	year      = {2001},
+}
+
+@book{liu2010,
+	author    = {刘强},
+	title     = {宪法学原理},
+	publisher = {中国政法大学出版社},
+	address   = {北京},
+	year      = {2010},
+}
+
+@book{liu2018,
+	author    = {刘强},
+	title     = {行政法研究},
+	publisher = {法律出版社},
+	address   = {北京},
+	year      = {2018},
+}
+\end{filecontents*}
+
+\documentclass{ctexart}
+
+\usepackage[style=chinese-verbose-trad2,
+            language=chinese,
+            ibidpage=true,
+            backend=biber]{biblatex}
+
+\addbibresource{refs.bib}
+
+\begin{document}
+
+\section*{汉化 verbose-trad2 脚注示例}
+
+下面一组脚注依次演示了“完整引用—同作者异书(idem)—同上(ibidem)—前引书(op.~cit.)”
+的完整链条，所有提示词均已被汉化。\footcite[25]{zhang2010}
+
+随后引用同一作者的另一部作品（首次出现，给完整信息）。%
+\footcite{zhang2015}
+
+相邻脚注再次引用同一文献，输出“同上”（ibidem）。\footcite[30]{zhang2015}
+
+再引用一位不同作者的译著，会给出完整信息（含“译”）。\footcite{li2020}
+
+隔了几条之后再次引用张伟的《民法总论》，作者相同但非紧邻，
+提示词变为“前引书”（op.~cit.）。\footcite[12]{zhang2010}
+
+期刊论文的完整脚注格式如下。\footcite{wang2019}
+
+编著类文献的责任方式显示为“编”。\footcite{chen2018}
+
+学位论文也能正确本地化。\footcite{zhao2021}
+
+西文文献同样适用该样式，仅在术语处切换为中文提示词。\footcite[15]{smith2001}
+
+再次引用前文期刊论文时使用“前引书”。\footcite[20]{wang2019}
+
+行内使用 \verb|\autocite| 也会落入脚注：\autocite{zhang2010}
+
+先把刘强《宪法学原理》作为完整引用\footcite{liu2010}；随后在同一脚注内先引其
+《行政法研究》、再引《宪法学原理》，后者因同作者而缩写为“同上”（idem）：%
+\footnote{如\footcite{liu2018}\footcite{liu2010}。}
+
+\bigskip
+\noindent 说明：以上脚注中的“同上”对应 \texttt{ibidem}，“前引书”对应
+\texttt{op.~cit.}；同作者异书情形由 \texttt{idem} 控制。这些字符串均定义在
+随附的 \texttt{chinese.lbx} 中，可按需修改。
+
+\printbibliography
+
+\end{document}
